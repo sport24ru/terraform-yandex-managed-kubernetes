@@ -82,45 +82,45 @@ resource "yandex_kubernetes_cluster" "default" {
   }
 }
 
-resource "yandex_kubernetes_node_group" "default" {
-  count = length(var.node_groups)
+resource "yandex_kubernetes_node_group" "node_groups" {
+  for_each = var.node_groups
 
   cluster_id  = yandex_kubernetes_cluster.default.id
-  name        = lookup(var.node_groups[count.index], "name", null)
-  description = lookup(var.node_groups[count.index], "description", null)
-  labels      = lookup(var.node_groups[count.index], "labels", {})
-  version     = lookup(var.node_groups[count.index], "version", var.master_version)
+  name        = each.key
+  description = lookup(each.value, "description", null)
+  labels      = lookup(each.value, "labels", null)
+  version     = lookup(each.value, "version", var.master_version)
 
   instance_template {
-    platform_id = lookup(var.node_groups[count.index], "platform_id", null)
-    nat         = lookup(var.node_groups[count.index], "nat", null)
-    metadata    = lookup(var.node_groups[count.index], "metadata", null)
+    platform_id = lookup(each.value, "platform_id", null)
+    nat         = lookup(each.value, "nat", null)
+    metadata    = lookup(each.value, "metadata", null)
 
     resources {
-      cores         = lookup(var.node_groups[count.index], "cores", 2)
-      core_fraction = lookup(var.node_groups[count.index], "core_fraction", 100)
-      memory        = lookup(var.node_groups[count.index], "memory", 2)
+      cores         = lookup(each.value, "cores", 2)
+      core_fraction = lookup(each.value, "core_fraction", 100)
+      memory        = lookup(each.value, "memory", 2)
     }
 
     boot_disk {
-      type = lookup(var.node_groups[count.index], "boot_disk_type", "network-ssd")
-      size = lookup(var.node_groups[count.index], "boot_disk_size", 64)
+      type = lookup(each.value, "boot_disk_type", "network-ssd")
+      size = lookup(each.value, "boot_disk_size", 64)
     }
 
     scheduling_policy {
-      preemptible = lookup(var.node_groups[count.index], "preemptible", false)
+      preemptible = lookup(each.value, "preemptible", false)
     }
   }
 
   scale_policy {
     fixed_scale {
-      size = lookup(var.node_groups[count.index], "size", 1)
+      size = lookup(each.value, "size", 1)
     }
   }
 
   allocation_policy {
     dynamic "location" {
-      for_each = lookup(var.node_groups[count.index], "zones", var.master_zones)
+      for_each = lookup(each.value, "zones", var.master_zones)
 
       content {
         zone      = location.value.zone

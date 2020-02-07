@@ -125,5 +125,5 @@ EOF
 }
 
 variable "node_groups" {
-  default = []
+  default = {}
 }
