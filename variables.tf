@@ -126,17 +126,4 @@ EOF
 
 variable "node_groups" {
   default = []
-
-  type = list(object({
-    metadata = map(string)
-
-    memory         = number
-    cores          = number
-    core_fraction  = number
-    boot_disk_type = string
-    boot_disk_size = number
-    preemptible    = bool
-
-    size = number
-  }))
 }
