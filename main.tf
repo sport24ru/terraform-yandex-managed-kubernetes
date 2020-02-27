@@ -6,7 +6,8 @@ locals {
 
   zones = length(var.master_zones) > 1 ? [] : var.master_zones
 
-  node_service_account_count = (var.service_account_name == null) || (var.service_account_name == var.node_service_account_name) ? 0 : 1
+  node_service_account_count = (var.node_service_account_name == null) || (var.service_account_name == var.node_service_account_name) ? 0 : 1
+  node_service_account_name  = coalesce(var.node_service_account_name, var.service_account_name)
 }
 
 resource "yandex_iam_service_account" "service_account" {
@@ -22,7 +23,7 @@ resource "yandex_resourcemanager_folder_iam_binding" "service_account" {
 resource "yandex_iam_service_account" "node_service_account" {
   count = local.node_service_account_count
 
-  name = var.service_account_name
+  name = local.node_service_account_name
 }
 
 resource "yandex_resourcemanager_folder_iam_binding" "node_service_account" {
