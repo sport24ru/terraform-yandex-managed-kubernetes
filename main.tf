@@ -92,6 +92,9 @@ resource "yandex_kubernetes_node_group" "node_groups" {
   labels      = lookup(each.value, "labels", null)
   version     = lookup(each.value, "version", var.master_version)
 
+  node_labels = lookup(each.value, "node_labels", null)
+  node_taints = lookup(each.value, "node_taints", null)
+
   instance_template {
     platform_id = lookup(each.value, "platform_id", null)
     nat         = lookup(each.value, "nat", null)
