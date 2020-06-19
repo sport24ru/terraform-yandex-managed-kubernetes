@@ -102,6 +102,16 @@ resource "yandex_kubernetes_cluster" "default" {
       }
     }
   }
+
+  network_policy_provider = var.network_policy_provider
+
+  dynamic "kms_provider" {
+    for_each = var.kms_provider_key_id == null ? [] : [var.kms_provider_key_id]
+
+    content {
+      key_id = kms_provider.value
+    }
+  }
 }
 
 resource "yandex_kubernetes_node_group" "node_groups" {

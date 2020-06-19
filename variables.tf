@@ -130,6 +130,20 @@ variable "release_channel" {
   default = "STABLE"
 }
 
+variable "network_policy_provider" {
+  description = "Network policy provider for the cluster. Possible values: CALICO."
+
+  type = string
+
+  default = null
+}
+
+variable "kms_provider_key_id" {
+  description = "KMS key ID"
+
+  default = null
+}
+
 variable "master_version" {
   description = "Version of Kubernetes that will be used for master."
 
