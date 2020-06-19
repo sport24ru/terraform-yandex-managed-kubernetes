@@ -1,3 +1,11 @@
+terraform {
+  required_version = ">= 0.12.20"
+
+  required_providers {
+    yandex = ">= 0.38.0"
+  }
+}
+
 locals {
   regions = length(var.master_zones) > 1 ? [{
     region    = var.master_region
