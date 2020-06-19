@@ -18,3 +18,11 @@ output "node_group_ids" {
 output "node_groups" {
   value = yandex_kubernetes_node_group.node_groups
 }
+
+output "service_account_id" {
+  value = local.service_account_id
+}
+
+output "node_service_account_id" {
+  value = local.node_service_account_id
+}

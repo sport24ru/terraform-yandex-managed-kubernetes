@@ -46,6 +46,17 @@ EOF
   default = null
 }
 
+variable "node_ipv4_cidr_mask_size" {
+  description = <<EOF
+Size of the masks that are assigned to each node in the cluster. Effectively
+limits maximum number of pods for each node.
+EOF
+
+  type = number
+
+  default = null
+}
+
 variable "service_ipv4_range" {
   description = <<EOF
 CIDR block. IP range Kubernetes service Kubernetes cluster IP addresses
@@ -58,20 +69,54 @@ EOF
   default = null
 }
 
-variable "service_account_name" {
+variable "service_account_id" {
   description = <<EOF
-Name of service account to be used for provisioning Compute Cloud
-and VPC resources for Kubernetes cluster.
+ID of existing service account to be used for provisioning Compute Cloud
+and VPC resources for Kubernetes cluster. Selected service account should have
+edit role on the folder where the Kubernetes cluster will be located and on the
+folder where selected network resides.
 EOF
 
   type = string
+
+  default = null
+}
+
+variable "service_account_name" {
+  description = <<EOF
+Name of service account to create to be used for provisioning Compute Cloud
+and VPC resources for Kubernetes cluster.
+
+`service_account_name` is ignored if `service_account_id` is set.
+EOF
+
+  type = string
+
+  default = null
+}
+
+variable "node_service_account_id" {
+  description = <<EOF
+ID of service account to be used by the worker nodes of the Kubernetes
+cluster to access Container Registry or to push node logs and metrics.
+
+If ommited or equal to `service_account_id`, service account will be used
+as node service account.
+EOF
+
+  default = null
 }
 
 variable "node_service_account_name" {
   description = <<EOF
-Name of service account to be used by the worker nodes of the Kubernetes cluster
-to access Container Registry or to push node logs and metrics. If ommited or
-equal to service_account_name, service account will be used as node service account.
+Name of service account to create to be used by the worker nodes of
+the Kubernetes cluster to access Container Registry or to push node logs
+and metrics.
+
+If ommited or equal to `service_account_name`, service account
+will be used as node service account.
+
+`node_service_account_name` is ignored if `node_service_account_id` is set.
 EOF
 
   default = null

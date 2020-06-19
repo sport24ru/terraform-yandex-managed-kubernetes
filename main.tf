@@ -6,36 +6,49 @@ locals {
 
   zones = length(var.master_zones) > 1 ? [] : var.master_zones
 
-  node_service_account_count = (var.node_service_account_name == null) || (var.service_account_name == var.node_service_account_name) ? 0 : 1
-  node_service_account_name  = coalesce(var.node_service_account_name, var.service_account_name)
+  service_account_name = var.service_account_id == null ? var.service_account_name : null
 }
 
 resource "yandex_iam_service_account" "service_account" {
+  count = local.service_account_name == null ? 0 : 1
+
   name = var.service_account_name
 }
 
+locals {
+  service_account_id = try(yandex_iam_service_account.service_account[0].id, var.service_account_id)
+}
+
 resource "yandex_resourcemanager_folder_iam_binding" "service_account" {
+  count = local.service_account_name == null ? 0 : 1
+
   folder_id = var.folder_id
-  members   = ["serviceAccount:${yandex_iam_service_account.service_account.id}"]
+  members   = ["serviceAccount:${local.service_account_id}"]
   role      = "editor"
 }
 
+locals {
+  node_service_account_name = var.node_service_account_id == null ? var.node_service_account_name : null
+
+  node_service_account_exists = (local.node_service_account_name == null) || (var.service_account_name == var.node_service_account_name)
+}
+
 resource "yandex_iam_service_account" "node_service_account" {
-  count = local.node_service_account_count
+  count = local.node_service_account_exists ? 0 : 1
 
   name = local.node_service_account_name
 }
 
-resource "yandex_resourcemanager_folder_iam_binding" "node_service_account" {
-  count = local.node_service_account_count
-
-  folder_id = var.folder_id
-  members   = ["serviceAccount:${yandex_iam_service_account.node_service_account[0].id}"]
-  role      = "container-registry.images.puller"
+locals {
+  node_service_account_id = try(yandex_iam_service_account.node_service_account[0].id, local.node_service_account_exists ? coalesce(var.node_service_account_id, local.service_account_id) : null)
 }
 
-locals {
-  node_service_account_id = local.node_service_account_count > 0 ? yandex_iam_service_account.node_service_account[0].id : yandex_iam_service_account.service_account.id
+resource "yandex_resourcemanager_folder_iam_binding" "node_service_account" {
+  count = (local.node_service_account_name == null) || (var.service_account_name == var.node_service_account_name) ? 0 : 1
+
+  folder_id = var.folder_id
+  members   = ["serviceAccount:${local.node_service_account_id}"]
+  role      = "container-registry.images.puller"
 }
 
 resource "yandex_kubernetes_cluster" "default" {
@@ -45,7 +58,7 @@ resource "yandex_kubernetes_cluster" "default" {
   network_id              = var.network_id
   cluster_ipv4_range      = var.cluster_ipv4_range
   service_ipv4_range      = var.service_ipv4_range
-  service_account_id      = yandex_iam_service_account.service_account.id
+  service_account_id      = local.service_account_id
   node_service_account_id = local.node_service_account_id
   release_channel         = var.release_channel
 
