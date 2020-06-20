@@ -81,7 +81,7 @@ resource "yandex_kubernetes_cluster" "default" {
 
       content {
         zone      = zonal.value["zone"]
-        subnet_id = zonal.value["id"]
+        subnet_id = zonal.value["subnet_id"]
       }
     }
 
@@ -96,7 +96,7 @@ resource "yandex_kubernetes_cluster" "default" {
 
           content {
             zone      = location.value["zone"]
-            subnet_id = location.value["id"]
+            subnet_id = location.value["subnet_id"]
           }
         }
       }
@@ -174,7 +174,7 @@ resource "yandex_kubernetes_node_group" "node_groups" {
 
       content {
         zone      = location.value.zone
-        subnet_id = location.value.id
+        subnet_id = location.value.subnet_id
       }
     }
   }

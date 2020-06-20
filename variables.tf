@@ -178,8 +178,8 @@ location, will be created zonal cluster, if more than one -- regional.
 EOF
 
   type = list(object({
-    zone = string
-    id   = string
+    zone      = string
+    subnet_id = string
   }))
 }
 
