@@ -171,10 +171,10 @@ EOF
   default = null
 }
 
-variable "master_zones" {
+variable "master_locations" {
   description = <<EOF
-List of zones where cluster will be created. If list contains only one zone,
-will be created zonal cluster, if more than one -- regional.
+List of locations where cluster will be created. If list contains only one
+location, will be created zonal cluster, if more than one -- regional.
 EOF
 
   type = list(object({

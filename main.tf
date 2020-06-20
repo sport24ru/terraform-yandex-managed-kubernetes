@@ -7,12 +7,12 @@ terraform {
 }
 
 locals {
-  regions = length(var.master_zones) > 1 ? [{
+  regions = length(var.master_locations) > 1 ? [{
     region    = var.master_region
-    locations = var.master_zones
+    locations = var.master_locations
   }] : []
 
-  zones = length(var.master_zones) > 1 ? [] : var.master_zones
+  locations = length(var.master_locations) > 1 ? [] : var.master_locations
 
   service_account_name = var.service_account_id == null ? var.service_account_name : null
 }
@@ -77,7 +77,7 @@ resource "yandex_kubernetes_cluster" "default" {
     public_ip = var.master_public_ip
 
     dynamic "zonal" {
-      for_each = local.zones
+      for_each = local.locations
 
       content {
         zone      = zonal.value["zone"]
@@ -156,7 +156,7 @@ resource "yandex_kubernetes_node_group" "node_groups" {
 
   allocation_policy {
     dynamic "location" {
-      for_each = lookup(each.value, "zones", var.master_zones)
+      for_each = lookup(each.value, "locations", var.master_locations)
 
       content {
         zone      = location.value.zone
