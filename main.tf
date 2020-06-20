@@ -149,8 +149,22 @@ resource "yandex_kubernetes_node_group" "node_groups" {
   }
 
   scale_policy {
-    fixed_scale {
-      size = lookup(each.value, "size", 1)
+    dynamic "fixed_scale" {
+      for_each = lookup(each.value, "fixed_scale", {})
+
+      content {
+        size = fixed_scale.value.size
+      }
+    }
+
+    dynamic "auto_scale" {
+      for_each = lookup(each.value, "auto_scale", {})
+
+      content {
+        min     = auto_scale.value.min
+        max     = auto_scale.value.max
+        initial = auto_scale.value.initial
+      }
     }
   }
 
