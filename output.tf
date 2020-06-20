@@ -1,4 +1,4 @@
-output "host" {
+output "external_v4_endpoint" {
   value = yandex_kubernetes_cluster.default.master[0].external_v4_endpoint
 }
 
