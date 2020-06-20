@@ -150,7 +150,7 @@ resource "yandex_kubernetes_node_group" "node_groups" {
 
   scale_policy {
     dynamic "fixed_scale" {
-      for_each = lookup(each.value, "fixed_scale", {})
+      for_each = flatten([lookup(each.value, "fixed_scale", [])])
 
       content {
         size = fixed_scale.value.size
@@ -158,7 +158,7 @@ resource "yandex_kubernetes_node_group" "node_groups" {
     }
 
     dynamic "auto_scale" {
-      for_each = lookup(each.value, "auto_scale", {})
+      for_each = flatten([lookup(each.value, "auto_scale", [])])
 
       content {
         min     = auto_scale.value.min
