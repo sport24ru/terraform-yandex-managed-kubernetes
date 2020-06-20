@@ -10,11 +10,6 @@ output "cluster_id" {
   value = yandex_kubernetes_cluster.default.id
 }
 
-// For now this output used only to inject dependency to helm module
-output "node_group_ids" {
-  value = [for node_group in yandex_kubernetes_node_group.node_groups : node_group.id]
-}
-
 output "node_groups" {
   value = yandex_kubernetes_node_group.node_groups
 }
