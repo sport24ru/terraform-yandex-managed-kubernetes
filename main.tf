@@ -59,7 +59,7 @@ resource "yandex_resourcemanager_folder_iam_binding" "node_service_account" {
   role      = "container-registry.images.puller"
 }
 
-resource "yandex_kubernetes_cluster" "default" {
+resource "yandex_kubernetes_cluster" "cluster" {
   name                    = var.name
   description             = var.description
   folder_id               = var.folder_id
@@ -117,7 +117,7 @@ resource "yandex_kubernetes_cluster" "default" {
 resource "yandex_kubernetes_node_group" "node_groups" {
   for_each = var.node_groups
 
-  cluster_id  = yandex_kubernetes_cluster.default.id
+  cluster_id  = yandex_kubernetes_cluster.cluster.id
   name        = each.key
   description = lookup(each.value, "description", null)
   labels      = lookup(each.value, "labels", null)
