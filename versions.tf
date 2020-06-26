@@ -1,7 +1,10 @@
 terraform {
-  required_version = ">= 0.12.20"
+  required_version = ">= 0.13"
 
   required_providers {
-    yandex = ">= 0.38.0"
+    yandex = {
+      source  = "terraform-providers/yandex"
+      version = ">= 0.38.0"
+    }
   }
 }
