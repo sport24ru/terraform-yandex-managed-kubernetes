@@ -100,7 +100,7 @@ variable "node_service_account_id" {
 ID of service account to be used by the worker nodes of the Kubernetes
 cluster to access Container Registry or to push node logs and metrics.
 
-If ommited or equal to `service_account_id`, service account will be used
+If omitted or equal to `service_account_id`, service account will be used
 as node service account.
 EOF
 
@@ -113,7 +113,7 @@ Name of service account to create to be used by the worker nodes of
 the Kubernetes cluster to access Container Registry or to push node logs
 and metrics.
 
-If ommited or equal to `service_account_name`, service account
+If omitted or equal to `service_account_name`, service account
 will be used as node service account.
 
 `node_service_account_name` is ignored if `node_service_account_id` is set.
