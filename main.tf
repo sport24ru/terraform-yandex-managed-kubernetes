@@ -115,6 +115,10 @@ resource "yandex_kubernetes_cluster" "cluster" {
       key_id = kms_provider.value
     }
   }
+
+  // to keep permissions of service account on destroy
+  // until cluster will be destroyed
+  depends_on = [yandex_resourcemanager_folder_iam_binding.service_account]
 }
 
 resource "yandex_kubernetes_node_group" "node_groups" {
