@@ -7,6 +7,15 @@ locals {
   locations = length(var.master_locations) > 1 ? [] : var.master_locations
 
   service_account_name = var.service_account_id == null ? var.service_account_name : null
+
+  common_ssh_keys_metadata = length(var.node_groups_default_ssh_keys) > 0 ? {
+    ssh-keys = join("\n", flatten([
+      for username, ssh_keys in var.node_groups_default_ssh_keys : [
+        for ssh_key in ssh_keys
+        : "${username}:${ssh_key}"
+      ]
+    ]))
+  } : {}
 }
 
 resource "yandex_iam_service_account" "service_account" {
@@ -122,7 +131,7 @@ resource "yandex_kubernetes_node_group" "node_groups" {
   instance_template {
     platform_id = lookup(each.value, "platform_id", null)
     nat         = lookup(each.value, "nat", null)
-    metadata    = lookup(each.value, "metadata", null)
+    metadata    = merge(local.common_ssh_keys_metadata, lookup(each.value, "metadata", {}))
 
     resources {
       cores         = lookup(each.value, "cores", 2)

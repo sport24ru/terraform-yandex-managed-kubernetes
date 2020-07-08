@@ -186,3 +186,13 @@ EOF
 variable "node_groups" {
   default = {}
 }
+
+variable "node_groups_default_ssh_keys" {
+  description = <<EOF
+Map containing SSH keys to install on all Kubernetes node servers.
+EOF
+
+  type = map(list(string))
+
+  default = {}
+}
