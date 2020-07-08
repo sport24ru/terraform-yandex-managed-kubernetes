@@ -189,10 +189,21 @@ variable "node_groups" {
 
 variable "node_groups_default_ssh_keys" {
   description = <<EOF
-Map containing SSH keys to install on all Kubernetes node servers.
+Map containing SSH keys to install on all Kubernetes node servers by default.
 EOF
 
   type = map(list(string))
 
   default = {}
+}
+
+variable "node_groups_default_locations" {
+  description = "Default locations of Kubernetes node groups."
+
+  type = list(object({
+    subnet_id = string
+    zone      = string
+  }))
+
+  default = null
 }

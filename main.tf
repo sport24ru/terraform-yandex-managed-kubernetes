@@ -1,10 +1,10 @@
 locals {
-  regions = length(var.master_locations) > 1 ? [{
+  master_regions = length(var.master_locations) > 1 ? [{
     region    = var.master_region
     locations = var.master_locations
   }] : []
 
-  locations = length(var.master_locations) > 1 ? [] : var.master_locations
+  master_locations = length(var.master_locations) > 1 ? [] : var.master_locations
 
   service_account_name = var.service_account_id == null ? var.service_account_name : null
 
@@ -16,6 +16,8 @@ locals {
       ]
     ]))
   } : {}
+
+  node_groups_default_locations = coalesce(var.node_groups_default_locations, var.master_locations)
 }
 
 resource "yandex_iam_service_account" "service_account" {
@@ -78,7 +80,7 @@ resource "yandex_kubernetes_cluster" "cluster" {
     public_ip = var.master_public_ip
 
     dynamic "zonal" {
-      for_each = local.locations
+      for_each = local.master_locations
 
       content {
         zone      = zonal.value["zone"]
@@ -87,7 +89,7 @@ resource "yandex_kubernetes_cluster" "cluster" {
     }
 
     dynamic "regional" {
-      for_each = local.regions
+      for_each = local.master_regions
 
       content {
         region = regional.value["region"]
@@ -171,7 +173,7 @@ resource "yandex_kubernetes_node_group" "node_groups" {
 
   allocation_policy {
     dynamic "location" {
-      for_each = lookup(each.value, "locations", var.master_locations)
+      for_each = lookup(each.value, "locations", local.node_groups_default_locations)
 
       content {
         zone      = location.value.zone
