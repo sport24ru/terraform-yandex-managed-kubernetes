@@ -207,3 +207,14 @@ variable "node_groups_default_locations" {
 
   default = null
 }
+
+variable "node_groups_locations" {
+  description = "Locations of Kubernetes node groups."
+
+  type = map(list(object({
+    subnet_id = string
+    zone      = string
+  })))
+
+  default = {}
+}

@@ -173,7 +173,7 @@ resource "yandex_kubernetes_node_group" "node_groups" {
 
   allocation_policy {
     dynamic "location" {
-      for_each = lookup(each.value, "locations", local.node_groups_default_locations)
+      for_each = lookup(var.node_groups_locations, each.key, local.node_groups_default_locations)
 
       content {
         zone      = location.value.zone
