@@ -142,7 +142,7 @@ resource "yandex_kubernetes_node_group" "node_groups" {
     }
 
     boot_disk {
-      type = lookup(each.value, "boot_disk_type", "network-ssd")
+      type = lookup(each.value, "boot_disk_type", "network-hdd")
       size = lookup(each.value, "boot_disk_size", 64)
     }
 
