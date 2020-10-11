@@ -28,7 +28,7 @@ locals {
 data "yandex_client_config" "client" {}
 
 module "kubernetes" {
-  source = "github.com/sport24ru/terraform-yandex-managed-kubernetes"
+  source = "sport24ru/managed-kubernetes/yandex"
 
   name       = "multizonal-nodes"
   folder_id  = data.yandex_client_config.client.folder_id

@@ -26,7 +26,7 @@ resource "yandex_vpc_subnet" "a" {
 }
 
 module "kubernetes" {
-  source = "git::git@github.com:sport24ru/terraform-yandex-managed-kubernetes"
+  source = "sport24ru/managed-kubernetes/yandex"
 
   name             = "default"
 

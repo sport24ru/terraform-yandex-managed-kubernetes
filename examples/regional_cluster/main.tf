@@ -19,7 +19,7 @@ resource "yandex_vpc_subnet" "kubernetes" {
 data "yandex_client_config" "client" {}
 
 module "kubernetes" {
-  source = "github.com/sport24ru/terraform-yandex-managed-kubernetes"
+  source = "sport24ru/managed-kubernetes/yandex"
 
   name       = "regional-cluster"
   folder_id  = data.yandex_client_config.client.folder_id
