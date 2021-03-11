@@ -187,6 +187,37 @@ variable "master_locations" {
   }))
 }
 
+variable "master_auto_upgrade" {
+  description = <<-EOF
+  Boolean flag that specifies if master can be upgraded automatically.
+  EOF
+
+  type = bool
+
+  default = true
+}
+
+variable "master_maintenance_windows" {
+  description = <<EOF
+  List of structures that specifies maintenance windows,
+  when auto update for master is allowed.
+
+  Example:
+  ```
+  master_maintenance_windows = [
+    {
+      start_time = "23:00"
+      duration   = "3h"
+    }
+  ]
+  ```
+  EOF
+
+  type = list(map(string))
+
+  default = []
+}
+
 variable "node_groups" {
   description = "Parameters of Kubernetes node groups."
 

@@ -69,7 +69,9 @@ module "kubernetes" {
 | folder\_id | The ID of the folder that the Kubernetes cluster belongs to. | `string` | n/a | yes |
 | kms\_provider\_key\_id | KMS key ID. | `any` | `null` | no |
 | labels | A set of key/value label pairs to assign to the Kubernetes cluster. | `map(string)` | `{}` | no |
+| master\_auto\_upgrade | Boolean flag that specifies if master can be upgraded automatically. | `bool` | `true` | no |
 | master\_locations | List of locations where cluster will be created. If list contains only one<br>location, will be created zonal cluster, if more than one -- regional. | <pre>list(object({<br>  zone      = string<br>  subnet_id = string<br>}))</pre> | n/a | yes |
+| master\_maintenance\_window | List of structures that specifies maintenance windows, when auto update for master is allowed. | `list(map(string))` | `[]` | no |
 | master\_public\_ip | Boolean flag. When true, Kubernetes master will have visible ipv4 address. | `bool` | `true` | no |
 | master\_region | Name of region where cluster will be created. Required for regional cluster,<br>not used for zonal cluster. | `string` | `null` | no |
 | master\_version | Version of Kubernetes that will be used for master. | `string` | `null` | no |
@@ -112,6 +114,9 @@ value is a map of node group attributes.
 | preemptible | Specifies if the instance is preemptible | `bool` | false | no |
 | fixed_scale | Scale policy for a fixed scale node group | <pre>object({<br>  size = number<br>})</pre> | | One of `fixed_scale` or `auto_scale` must be defined |
 | auto_scale | Scale policy for an autoscaled node group | <pre>object({<br>  min = number<br>  max = number<br>  initial = number<br>})</pre> | | One of `fixed_scale` or `auto_scale` must be defined |
+| auto_upgrade | Boolean flag that specifies if node group can be upgraded automatically. | `bool` | `true` | no |
+| auto_repair | Boolean flag that specifies if node group can be repaired automatically. | `bool` | `true` | no |
+| maintenance_windows | List of day intervals, when maintenance is allowed for this node group. | list(map(string)) | [] | no |
 
 ## Outputs
 

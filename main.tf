@@ -41,7 +41,7 @@ resource "yandex_resourcemanager_folder_iam_binding" "service_account" {
 locals {
   node_service_account_name = var.node_service_account_id == null ? var.node_service_account_name : null
 
-  node_service_account_exists = (local.node_service_account_name == null) || (var.service_account_name == var.node_service_account_name)
+  node_service_account_exists = local.node_service_account_name == null || var.service_account_name == var.node_service_account_name
 }
 
 resource "yandex_iam_service_account" "node_service_account" {
@@ -101,6 +101,20 @@ resource "yandex_kubernetes_cluster" "cluster" {
             zone      = location.value["zone"]
             subnet_id = location.value["subnet_id"]
           }
+        }
+      }
+    }
+
+    maintenance_policy {
+      auto_upgrade = var.master_auto_upgrade
+
+      dynamic "maintenance_window" {
+        for_each = var.master_maintenance_windows
+
+        content {
+          day        = lookup(maintenance_window.value, "day", null)
+          start_time = maintenance_window.value["start_time"]
+          duration   = maintenance_window.value["duration"]
         }
       }
     }
@@ -182,6 +196,21 @@ resource "yandex_kubernetes_node_group" "node_groups" {
       content {
         zone      = location.value.zone
         subnet_id = location.value.subnet_id
+      }
+    }
+  }
+
+  maintenance_policy {
+    auto_repair  = lookup(each.value, "auto_repair", true)
+    auto_upgrade = lookup(each.value, "auto_upgrade", true)
+
+    dynamic "maintenance_window" {
+      for_each = lookup(each.value, "maintenance_windows", [])
+
+      content {
+        day        = lookup(maintenance_window.value, "day", null)
+        start_time = maintenance_window.value["start_time"]
+        duration   = maintenance_window.value["duration"]
       }
     }
   }
