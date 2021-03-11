@@ -116,7 +116,7 @@ value is a map of node group attributes.
 | auto_scale | Scale policy for an autoscaled node group | <pre>object({<br>  min = number<br>  max = number<br>  initial = number<br>})</pre> | | One of `fixed_scale` or `auto_scale` must be defined |
 | auto_upgrade | Boolean flag that specifies if node group can be upgraded automatically. | `bool` | `true` | no |
 | auto_repair | Boolean flag that specifies if node group can be repaired automatically. | `bool` | `true` | no |
-| maintenance_windows | List of day intervals, when maintenance is allowed for this node group. | list(map(string)) | [] | no |
+| maintenance_windows | List of day intervals, when maintenance is allowed for this node group. | `list(map(string))` | [] | no |
 
 ## Outputs
 
