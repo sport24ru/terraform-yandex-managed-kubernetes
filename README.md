@@ -125,6 +125,7 @@ value is a map of node group attributes.
 | cluster\_ca\_certificate | PEM-encoded public certificate that is the root of trust for<br>the Kubernetes cluster. |
 | cluster\_id | ID of a new Kubernetes cluster. |
 | external\_v4\_endpoint | An IPv4 external network address that is assigned to the master. |
+| internal\_v4\_endpoint | An IPv4 internal network address that is assigned to the master. |
 | node\_groups | Attributes of yandex\_node\_group resources created in cluster |
 | node\_service\_account\_id | ID of service account to be used by the worker nodes of the Kubernetes cluster<br>to access Container Registry or to push node logs and metrics |
 | service\_account\_id | ID of service account used for provisioning Compute Cloud and VPC resources<br>for Kubernetes cluster |
