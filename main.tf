@@ -30,12 +30,13 @@ locals {
   service_account_id = try(yandex_iam_service_account.service_account[0].id, var.service_account_id)
 }
 
-resource "yandex_resourcemanager_folder_iam_binding" "service_account" {
+resource "yandex_resourcemanager_folder_iam_member" "service_account" {
   count = local.service_account_name == null ? 0 : 1
 
   folder_id = var.folder_id
-  members   = ["serviceAccount:${local.service_account_id}"]
-  role      = "editor"
+
+  role   = "editor"
+  member = "serviceAccount:${local.service_account_id}"
 }
 
 locals {
@@ -54,12 +55,13 @@ locals {
   node_service_account_id = try(yandex_iam_service_account.node_service_account[0].id, local.node_service_account_exists ? coalesce(var.node_service_account_id, local.service_account_id) : null)
 }
 
-resource "yandex_resourcemanager_folder_iam_binding" "node_service_account" {
+resource "yandex_resourcemanager_folder_iam_member" "node_service_account" {
   count = (local.node_service_account_name == null) || (var.service_account_name == var.node_service_account_name) ? 0 : 1
 
   folder_id = var.folder_id
-  members   = ["serviceAccount:${local.node_service_account_id}"]
-  role      = "container-registry.images.puller"
+
+  role   = "container-registry.images.puller"
+  member = "serviceAccount:${local.node_service_account_id}"
 }
 
 resource "yandex_kubernetes_cluster" "cluster" {
@@ -132,7 +134,7 @@ resource "yandex_kubernetes_cluster" "cluster" {
 
   // to keep permissions of service account on destroy
   // until cluster will be destroyed
-  depends_on = [yandex_resourcemanager_folder_iam_binding.service_account]
+  depends_on = [yandex_resourcemanager_folder_iam_member.service_account]
 }
 
 resource "yandex_kubernetes_node_group" "node_groups" {
