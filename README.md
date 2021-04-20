@@ -9,6 +9,26 @@ Module will manage
 
 This module is meant for use with Terraform >= 0.13.
 
+## Upgrade to 2.x
+
+The module version 1.x uses the `yandex_resourcemanager_folder_iam_binding`
+resource to manage permissions of the service account.
+
+The problem is that when you delete this resource, the bindings
+of all service accounts with similar permissions are deleted.
+
+Since version 2.x this resource has been replaced
+with `yandex_resourcemanager_folder_iam_member`, which has no such side effects.
+
+If you manage service accounts using the 1.x module, you may need
+to manually remove legacy `yandex_resourcemanager_folder_iam_binding` resources
+from state to protect the current bindings. For example:
+
+```
+terraform state rm 'yandex_resourcemanager_folder_iam_binding.service_account[0]'
+terraform state rm 'yandex_resourcemanager_folder_iam_binding.node_service_account[0]'
+```
+
 ## Example Usage
 
 ```hcl-terraform
