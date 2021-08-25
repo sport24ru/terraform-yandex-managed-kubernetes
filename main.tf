@@ -169,6 +169,12 @@ resource "yandex_kubernetes_node_group" "node_groups" {
     scheduling_policy {
       preemptible = lookup(each.value, "preemptible", false)
     }
+
+    network_interface {
+      subnet_ids         = [for location in lookup(var.node_groups_locations, each.key, local.node_groups_default_locations) : location.subnet_id]
+      nat                = lookup(each.value, "nat", null)
+      security_group_ids = lookup(each.value, "security_group_ids", null)
+    }
   }
 
   scale_policy {
@@ -196,8 +202,7 @@ resource "yandex_kubernetes_node_group" "node_groups" {
       for_each = lookup(var.node_groups_locations, each.key, local.node_groups_default_locations)
 
       content {
-        zone      = location.value.zone
-        subnet_id = location.value.subnet_id
+        zone = location.value.zone
       }
     }
   }

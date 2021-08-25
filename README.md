@@ -137,6 +137,7 @@ value is a map of node group attributes.
 | auto_upgrade | Boolean flag that specifies if node group can be upgraded automatically. | `bool` | `true` | no |
 | auto_repair | Boolean flag that specifies if node group can be repaired automatically. | `bool` | `true` | no |
 | maintenance_windows | List of day intervals, when maintenance is allowed for this node group. | `list(map(string))` | [] | no |
+| security_group_ids | Security group ids for network interface. | `set(string)` | | no |
 
 ## Outputs
 
@@ -155,10 +156,10 @@ value is a map of node group attributes.
 | Name | Version |
 |------|---------|
 | terraform | >= 0.13.0 |
-| yandex | >= 0.44.0 |
+| yandex | >= 0.52.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| yandex | >= 0.44.0 |
+| yandex | >= 0.52.0 |
