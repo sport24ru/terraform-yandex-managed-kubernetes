@@ -152,7 +152,6 @@ resource "yandex_kubernetes_node_group" "node_groups" {
 
   instance_template {
     platform_id = lookup(each.value, "platform_id", null)
-    nat         = lookup(each.value, "nat", null)
     metadata    = merge(local.common_ssh_keys_metadata, lookup(each.value, "metadata", {}))
 
     resources {
