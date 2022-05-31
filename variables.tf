@@ -46,6 +46,14 @@ variable "cluster_ipv4_range" {
   default = null
 }
 
+variable "cluster_ipv6_range" {
+  description = "Identical to cluster_ipv4_range but for IPv6 protocol."
+
+  type = string
+
+  default = null
+}
+
 variable "node_ipv4_cidr_mask_size" {
   description = <<-EOF
   Size of the masks that are assigned to each node in the cluster. Effectively
@@ -162,6 +170,14 @@ variable "master_public_ip" {
   type = bool
 
   default = true
+}
+
+variable "master_security_group_ids" {
+  description = "List of security group IDs to which the Kubernetes cluster belongs."
+
+  type = set(string)
+
+  default = null
 }
 
 variable "master_region" {

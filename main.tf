@@ -65,21 +65,32 @@ resource "yandex_resourcemanager_folder_iam_member" "node_service_account" {
 }
 
 resource "yandex_kubernetes_cluster" "cluster" {
-  name                    = var.name
-  description             = var.description
-  folder_id               = var.folder_id
-  network_id              = var.network_id
-  cluster_ipv4_range      = var.cluster_ipv4_range
-  service_ipv4_range      = var.service_ipv4_range
-  service_account_id      = local.service_account_id
-  node_service_account_id = local.node_service_account_id
-  release_channel         = var.release_channel
+  name                     = var.name
+  description              = var.description
+  folder_id                = var.folder_id
+  labels                   = var.labels
+  network_id               = var.network_id
+  cluster_ipv4_range       = var.cluster_ipv4_range
+  cluster_ipv6_range       = var.cluster_ipv6_range
+  node_ipv4_cidr_mask_size = var.node_ipv4_cidr_mask_size
+  service_ipv4_range       = var.service_ipv4_range
+  service_account_id       = local.service_account_id
+  node_service_account_id  = local.node_service_account_id
+  release_channel          = var.release_channel
+  network_policy_provider  = var.network_policy_provider
 
-  labels = var.labels
+  dynamic "kms_provider" {
+    for_each = var.kms_provider_key_id == null ? [] : [var.kms_provider_key_id]
+
+    content {
+      key_id = kms_provider.value
+    }
+  }
 
   master {
-    version   = var.master_version
-    public_ip = var.master_public_ip
+    version            = var.master_version
+    public_ip          = var.master_public_ip
+    security_group_ids = var.master_security_group_ids
 
     dynamic "zonal" {
       for_each = local.master_locations
@@ -122,16 +133,6 @@ resource "yandex_kubernetes_cluster" "cluster" {
     }
   }
 
-  network_policy_provider = var.network_policy_provider
-
-  dynamic "kms_provider" {
-    for_each = var.kms_provider_key_id == null ? [] : [var.kms_provider_key_id]
-
-    content {
-      key_id = kms_provider.value
-    }
-  }
-
   // to keep permissions of service account on destroy
   // until cluster will be destroyed
   depends_on = [yandex_resourcemanager_folder_iam_member.service_account]
@@ -146,19 +147,15 @@ resource "yandex_kubernetes_node_group" "node_groups" {
   labels      = lookup(each.value, "labels", null)
   version     = lookup(each.value, "version", var.master_version)
 
-  node_labels            = lookup(each.value, "node_labels", null)
-  node_taints            = lookup(each.value, "node_taints", null)
-  allowed_unsafe_sysctls = lookup(each.value, "allowed_unsafe_sysctls", null)
-
   instance_template {
     platform_id = lookup(each.value, "platform_id", null)
-    nat         = lookup(each.value, "nat", null)
     metadata    = merge(local.common_ssh_keys_metadata, lookup(each.value, "metadata", {}))
 
     resources {
       cores         = lookup(each.value, "cores", 2)
       core_fraction = lookup(each.value, "core_fraction", 100)
       memory        = lookup(each.value, "memory", 2)
+      gpus          = lookup(each.value, "gpus", null)
     }
 
     boot_disk {
@@ -170,10 +167,28 @@ resource "yandex_kubernetes_node_group" "node_groups" {
       preemptible = lookup(each.value, "preemptible", false)
     }
 
+    dynamic "placement_policy" {
+      for_each = compact([lookup(each.value, "placement_group_id", null)])
+
+      content {
+        placement_group_id = placement_policy.value
+      }
+    }
+
     network_interface {
       subnet_ids         = [for location in lookup(var.node_groups_locations, each.key, local.node_groups_default_locations) : location.subnet_id]
       nat                = lookup(each.value, "nat", null)
       security_group_ids = lookup(each.value, "security_group_ids", null)
+    }
+
+    network_acceleration_type = lookup(each.value, "network_acceleration_type", null)
+
+    dynamic "container_runtime" {
+      for_each = compact([lookup(each.value, "container_runtime_type", null)])
+
+      content {
+        type = each.value
+      }
     }
   }
 
@@ -219,6 +234,22 @@ resource "yandex_kubernetes_node_group" "node_groups" {
         start_time = maintenance_window.value["start_time"]
         duration   = maintenance_window.value["duration"]
       }
+    }
+  }
+
+  node_labels            = lookup(each.value, "node_labels", null)
+  node_taints            = lookup(each.value, "node_taints", null)
+  allowed_unsafe_sysctls = lookup(each.value, "allowed_unsafe_sysctls", null)
+
+  dynamic "deploy_policy" {
+    for_each = anytrue([can(each.value["max_expansion"]), can(each.value["max_unavailable"])]) ? [{
+      max_expansion   = lookup(each.value, "max_expansion", null)
+      max_unavailable = lookup(each.value, "max_unavailable", null)
+    }] : []
+
+    content {
+      max_expansion   = each.value["max_expansion"]
+      max_unavailable = each.value["max_unavailable"]
     }
   }
 }
