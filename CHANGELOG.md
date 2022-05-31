@@ -1,3 +1,7 @@
+## 2.2.0 (Unreleased)
+
+* Added attribute `instance_template.resources.gpus` of node group
+* 
 ## 2.1.0 (August 25, 2021)
 
 ENHANCEMENTS:

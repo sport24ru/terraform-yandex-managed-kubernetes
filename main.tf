@@ -146,10 +146,6 @@ resource "yandex_kubernetes_node_group" "node_groups" {
   labels      = lookup(each.value, "labels", null)
   version     = lookup(each.value, "version", var.master_version)
 
-  node_labels            = lookup(each.value, "node_labels", null)
-  node_taints            = lookup(each.value, "node_taints", null)
-  allowed_unsafe_sysctls = lookup(each.value, "allowed_unsafe_sysctls", null)
-
   instance_template {
     platform_id = lookup(each.value, "platform_id", null)
     nat         = lookup(each.value, "nat", null)
@@ -159,6 +155,7 @@ resource "yandex_kubernetes_node_group" "node_groups" {
       cores         = lookup(each.value, "cores", 2)
       core_fraction = lookup(each.value, "core_fraction", 100)
       memory        = lookup(each.value, "memory", 2)
+      gpus          = lookup(each.value, "gpus", null)
     }
 
     boot_disk {
@@ -168,6 +165,10 @@ resource "yandex_kubernetes_node_group" "node_groups" {
 
     scheduling_policy {
       preemptible = lookup(each.value, "preemptible", false)
+    }
+
+    placement_policy {
+      placement_group_id = lookup(each.value, "placement_group_id", false)
     }
 
     network_interface {
@@ -221,4 +222,9 @@ resource "yandex_kubernetes_node_group" "node_groups" {
       }
     }
   }
+
+  node_labels            = lookup(each.value, "node_labels", null)
+  node_taints            = lookup(each.value, "node_taints", null)
+  allowed_unsafe_sysctls = lookup(each.value, "allowed_unsafe_sysctls", null)
+  # deploy_policy
 }
