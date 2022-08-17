@@ -187,7 +187,7 @@ resource "yandex_kubernetes_node_group" "node_groups" {
       for_each = compact([lookup(each.value, "container_runtime_type", null)])
 
       content {
-        type = each.value
+        type = container_runtime.value
       }
     }
   }
