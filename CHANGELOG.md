@@ -1,3 +1,9 @@
+## 2.2.1 (August 17, 2022)
+
+BUG FIXES:
+
+* Fixed value of instance_template.container_runtime attribute of node group.
+
 ## 2.2.0 (June 1, 2022)
 
 ENHANCEMENTS:
