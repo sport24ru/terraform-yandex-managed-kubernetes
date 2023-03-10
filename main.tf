@@ -23,6 +23,8 @@ locals {
 resource "yandex_iam_service_account" "service_account" {
   count = local.service_account_name == null ? 0 : 1
 
+  folder_id = var.folder_id
+
   name = var.service_account_name
 }
 
@@ -47,6 +49,8 @@ locals {
 
 resource "yandex_iam_service_account" "node_service_account" {
   count = local.node_service_account_exists ? 0 : 1
+
+  folder_id = var.folder_id
 
   name = local.node_service_account_name
 }
