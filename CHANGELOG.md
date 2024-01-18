@@ -1,3 +1,11 @@
+## 2.3.0 (January 18, 2024)
+
+NOTES:
+
+* Change attributes of cluster: use `master_location` instead `zonal` and `regional`
+* Ready for migration from C to D allocataion zone
+* Required provider yandex >= 0.105.0
+
 ## 2.2.1 (August 17, 2022)
 
 BUG FIXES:
@@ -24,7 +32,7 @@ NOTES:
 
 * Required provider yandex >= 0.70
 * Avoided usage of deprecated attribute
-  `yandex_kubernetes_node_group.instance_template.nat` (fixed #3) 
+  `yandex_kubernetes_node_group.instance_template.nat` (fixed #3)
 
 ## 2.1.0 (August 25, 2021)
 
