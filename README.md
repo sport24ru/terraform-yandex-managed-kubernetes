@@ -164,10 +164,10 @@ value is a map of node group attributes.
 | Name      | Version    |
 |-----------|------------|
 | terraform | > = 0.13.0 |
-| yandex    | > = 0.70   |
+| yandex    | > = 0.105.0   |
 
 ## Providers
 
 | Name   | Version    |
 |--------|------------|
-| yandex | > = 0.70   |
+| yandex | > = 0.105.0   |
