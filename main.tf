@@ -16,6 +16,8 @@ locals {
 resource "yandex_iam_service_account" "service_account" {
   count = local.service_account_name == null ? 0 : 1
 
+  folder_id = var.folder_id
+
   name = var.service_account_name
 }
 
@@ -40,6 +42,8 @@ locals {
 
 resource "yandex_iam_service_account" "node_service_account" {
   count = local.node_service_account_exists ? 0 : 1
+
+  folder_id = var.folder_id
 
   name = local.node_service_account_name
 }
@@ -106,6 +110,14 @@ resource "yandex_kubernetes_cluster" "cluster" {
           duration   = maintenance_window.value["duration"]
         }
       }
+    }
+
+    master_logging {
+      enabled                    = var.master_logging.enabled
+      folder_id                  = var.folder_id
+      kube_apiserver_enabled     = var.master_logging.enabled_kube_apiserver
+      cluster_autoscaler_enabled = var.master_logging.enabled_autoscaler
+      events_enabled             = var.master_logging.enabled_events
     }
   }
 

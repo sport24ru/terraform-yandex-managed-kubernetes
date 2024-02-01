@@ -279,3 +279,15 @@ variable "node_groups_locations" {
 
   default = {}
 }
+
+variable "master_logging" {
+  description = "master_logging options"
+  type        = map(any)
+  default = {
+    enabled                = false
+    folder_id              = null
+    enabled_kube_apiserver = false
+    enabled_autoscaler     = false
+    enabled_events         = false
+  }
+}
