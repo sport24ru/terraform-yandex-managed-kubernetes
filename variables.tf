@@ -180,21 +180,9 @@ variable "master_security_group_ids" {
   default = null
 }
 
-variable "master_region" {
-  description = <<-EOF
-  Name of region where cluster will be created. Required for regional cluster,
-  not used for zonal cluster.
-  EOF
-
-  type = string
-
-  default = null
-}
-
 variable "master_locations" {
   description = <<-EOF
-  List of locations where cluster will be created. If list contains only one
-  location, will be created zonal cluster, if more than one -- regional.
+  List of locations where cluster will be created.
   EOF
 
   type = list(object({
