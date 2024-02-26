@@ -1,9 +1,4 @@
 locals {
-  master_regions = length(var.master_locations) > 1 ? [{
-    region    = var.master_region
-    locations = var.master_locations
-  }] : []
-
   master_locations = length(var.master_locations) > 1 ? [] : var.master_locations
 
   service_account_name = var.service_account_id == null ? var.service_account_name : null
@@ -96,29 +91,11 @@ resource "yandex_kubernetes_cluster" "cluster" {
     public_ip          = var.master_public_ip
     security_group_ids = var.master_security_group_ids
 
-    dynamic "zonal" {
-      for_each = local.master_locations
-
+    dynamic "master_location" {
+      for_each = var.master_locations
       content {
-        zone      = zonal.value["zone"]
-        subnet_id = zonal.value["subnet_id"]
-      }
-    }
-
-    dynamic "regional" {
-      for_each = local.master_regions
-
-      content {
-        region = regional.value["region"]
-
-        dynamic "location" {
-          for_each = regional.value["locations"]
-
-          content {
-            zone      = location.value["zone"]
-            subnet_id = location.value["subnet_id"]
-          }
-        }
+        subnet_id = master_location.value["subnet_id"]
+        zone      = master_location.value["zone"]
       }
     }
 
