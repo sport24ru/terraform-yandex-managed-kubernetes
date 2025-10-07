@@ -107,6 +107,19 @@ resource "yandex_kubernetes_cluster" "cluster" {
         }
       }
     }
+
+    dynamic "master_logging" {
+    for_each = var.master_logging != null ? [var.master_logging] : []
+    content {
+      enabled                    = master_logging.value.enabled
+      log_group_id               = master_logging.value.log_group_id
+      kube_apiserver_enabled     = master_logging.value.kube_apiserver_enabled
+      cluster_autoscaler_enabled = master_logging.value.cluster_autoscaler_enabled
+      events_enabled             = master_logging.value.events_enabled
+      audit_enabled              = master_logging.value.audit_enabled
+    }
+  }
+
   }
 
   // to keep permissions of service account on destroy

@@ -203,6 +203,22 @@ variable "master_locations" {
   }))
 }
 
+variable "master_logging" {
+  description = "Master logging configuration"
+  
+  type = object({
+    enabled                    = bool
+    folder_id                  = string
+    log_group_id               = string
+    kube_apiserver_enabled     = bool
+    cluster_autoscaler_enabled = bool
+    events_enabled             = bool
+    audit_enabled              = bool
+  })
+
+  default = null
+}
+
 variable "master_auto_upgrade" {
   description = <<-EOF
   Boolean flag that specifies if master can be upgraded automatically.
