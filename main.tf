@@ -135,8 +135,10 @@ resource "yandex_kubernetes_node_group" "node_groups" {
   description = lookup(each.value, "description", null)
   labels      = lookup(each.value, "labels", null)
   version     = lookup(each.value, "version", var.master_version)
+  variables   = lookup(each.value, "variables", null)
 
   instance_template {
+    name        = lookup(each.value, "instance_name", null)
     platform_id = lookup(each.value, "platform_id", null)
     metadata    = merge(local.common_ssh_keys_metadata, lookup(each.value, "metadata", {}))
 

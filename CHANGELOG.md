@@ -1,3 +1,10 @@
+## 2.5.0 (November 24, 2026)
+
+ENHANCEMENTS:
+
+* Added attribute of node group `instance_name` (instance_template.name) -- name template of node group instances
+* Added attribute of node group `variables` -- user variables for instance templates (e.g. short zone names)
+
 ## 2.3.0 (January 18, 2024)
 
 NOTES:
